@@ -1,18 +1,15 @@
-stage('Test') {
-    steps {
-        echo 'Running tests...'
-        sh '''
-            echo "Hello from Jenkins Pipeline!"
-        '''
-    }
-}
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
+                echo 'Checking out source code...'
                 checkout scm
             }
         }
@@ -26,23 +23,27 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh './hello.sh'
+                sh 'echo "Hello from Jenkins Pipeline – Test stage successful!"'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
+                sh 'echo "Deployment step completed!"'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline completed successfully 🎉'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed ❌'
+        }
+        always {
+            echo 'Pipeline finished.'
         }
     }
 }
