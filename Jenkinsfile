@@ -1,3 +1,11 @@
+stage('Test') {
+    steps {
+        echo 'Running tests...'
+        sh '''
+            echo "Hello from Jenkins Pipeline!"
+        '''
+    }
+}
 pipeline {
     agent any
 
