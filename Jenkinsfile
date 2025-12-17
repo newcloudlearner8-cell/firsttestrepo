@@ -37,7 +37,7 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully 🎉'
+            echo 'Pipeline completed super very much successfully 🎉'
         }
         failure {
             echo 'Pipeline failed ❌'
