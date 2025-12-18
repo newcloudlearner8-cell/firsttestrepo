@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven-3.9.6'   // Configure this name in Jenkins
+        jdk 'JDK-17'          // Configure this name in Jenkins
+    }
+
     options {
         timestamps()
     }
@@ -9,38 +14,49 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the project...'
+                echo 'Compiling Java source code...'
+                sh 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                sh 'echo "Hello from Jenkins Pipeline – Test stage successful!"'
+                echo 'Running unit tests...'
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Package') {
             steps {
-                echo 'Deploying application...'
-                sh 'echo "Deployment step completed!"'
+                echo 'Packaging application...'
+                sh 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed super very much successfully 🎉'
+            echo 'Java + Maven build completed successfully 🎉'
         }
         failure {
-            echo 'Pipeline failed ❌'
+            echo 'Build failed ❌'
         }
         always {
             echo 'Pipeline finished.'
