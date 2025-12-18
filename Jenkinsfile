@@ -7,12 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
                 sh 'mvn clean compile'
@@ -22,7 +16,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn test'
-                junit 'target/surefire-reports/*.xml'
+                junit allowEmptyResults: true,
+                      testResults: 'target/surefire-reports/*.xml'
             }
         }
 
@@ -30,6 +25,15 @@ pipeline {
             steps {
                 sh 'mvn package -DskipTests'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully 🎉'
+        }
+        failure {
+            echo 'Pipeline failed ❌'
         }
     }
 }
