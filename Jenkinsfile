@@ -1,3 +1,4 @@
+sh 'kubectl get nodes'
 pipeline {
     agent any
 
